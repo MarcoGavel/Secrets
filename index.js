@@ -1,68 +1,68 @@
-// Importa il modulo express e assegnalo a una variabile chiamata 'express'
+// Import the express module and assign it to a variable called 'express'
 import express from "express";
 
-// Importa il modulo bodyParser per analizzare i dati inviati dalle richieste HTTP
+// Import the bodyParser module to parse data sent in HTTP requests
 import bodyParser from "body-parser";
 
-// Importa la funzione 'dirname' dal modulo 'path' per ottenere il nome della directory del file corrente
+// Import the 'dirname' function from the 'path' module to get the name of the current directory
 import { dirname } from "path";
 
-// Importa la funzione 'fileURLToPath' dal modulo 'url' per convertire un URL in un percorso del file corrispondente
+// Import the 'fileURLToPath' function from the 'url' module to convert a URL to a corresponding file path
 import { fileURLToPath } from "url";
 
-// Ottiene il percorso della directory corrente utilizzando le funzioni 'dirname' e 'fileURLToPath'
+// Get the path of the current directory using the 'dirname' and 'fileURLToPath' functions
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Crea un'applicazione Express
+// Create an Express application
 const app = express();
 
-// Definisce la porta su cui l'applicazione ascolterà le richieste HTTP
+// Define the port on which the application will listen for HTTP requests
 const port = 3000;
 
-// Variabile per memorizzare lo stato di autorizzazione dell'utente
+// Variable to store the user authorization status
 var userIsAuthorised = false;
 
-// Usa il middleware bodyParser per analizzare i dati delle richieste con formato URL-encoded
+// Use the bodyParser middleware to parse URL-encoded request data
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Middleware per verificare la password inviata nelle richieste POST
+// Middleware to check the password sent in POST requests
 function passwordCheck(req, res, next) {
-  // Ottiene la password inviata dalla richiesta
+  // Get the password sent in the request
   const password = req.body["password"];
 
-  // Verifica se la password inviata è corretta
+  // Check if the sent password is correct
   if (password === "ILoveProgramming") {
-    // Se la password è corretta, imposta lo stato di autorizzazione a true
+    // If the password is correct, set the authorization status to true
     userIsAuthorised = true;
   }
 
-  // Passa al middleware successivo
+  // Move on to the next middleware
   next();
 }
 
-// Utilizza il middleware 'passwordCheck' per tutte le richieste
+// Use the 'passwordCheck' middleware for all requests
 app.use(passwordCheck);
 
-// Gestisce le richieste GET all'endpoint principale "/"
+// Handle GET requests to the main endpoint "/"
 app.get("/", (req, res) => {
-  // Invia il file HTML dell'indice come risposta
+  // Send the index HTML file as the response
   res.sendFile(__dirname + "/public/index.html");
 });
 
-// Gestisce le richieste POST all'endpoint "/check"
+// Handle POST requests to the "/check" endpoint
 app.post("/check", (req, res) => {
-  // Verifica lo stato di autorizzazione dell'utente
+  // Check the user authorization status
   if (userIsAuthorised) {
-    // Se l'utente è autorizzato, invia il file HTML segreto come risposta
+    // If the user is authorized, send the secret HTML file as the response
     res.sendFile(__dirname + "/public/secret.html");
   } else {
-    // Se l'utente non è autorizzato, reindirizza alla homepage
+    // If the user is not authorized, redirect to the homepage
     res.sendFile(__dirname + "/public/index.html");
-    // Oppure utilizza il reindirizzamento tramite res.redirect("/");
+    // Or use redirection with res.redirect("/");
   }
 });
 
-// Avvia il server Express per ascoltare le richieste sulla porta specificata
+// Start the Express server to listen for requests on the specified port
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
