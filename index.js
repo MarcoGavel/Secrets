@@ -46,7 +46,7 @@ app.use(passwordCheck);
 // Handle GET requests to the main endpoint "/"
 app.get("/", (req, res) => {
   // Send the index HTML file as the response
-  res.sendFile(__dirname + "/public/index.html");
+  res.sendFile(__dirname + "/index.html");
 });
 
 // Handle POST requests to the "/check" endpoint
@@ -54,10 +54,10 @@ app.post("/check", (req, res) => {
   // Check the user authorization status
   if (userIsAuthorised) {
     // If the user is authorized, send the secret HTML file as the response
-    res.sendFile(__dirname + "/public/secret.html");
+    res.sendFile(__dirname + "/secret.html");
   } else {
     // If the user is not authorized, redirect to the homepage
-    res.sendFile(__dirname + "/public/index.html");
+    res.sendFile(__dirname + "/index.html");
     // Or use redirection with res.redirect("/");
   }
 });
